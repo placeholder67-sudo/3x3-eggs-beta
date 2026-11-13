@@ -7,105 +7,48 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
   <main class="container" id="login-screen">
     <section class="login-card">
-
       <div class="logo">🥚</div>
-
       <h1>Welcome!</h1>
       <p class="subtitle">Sign in to continue to 3x3 Eggs</p>
 
       <div id="signed-out">
+        <button id="login-btn" class="provider-btn github-btn">Continue with GitHub</button>
+        <button id="google-btn" class="provider-btn google-btn">Continue with Google</button>
+        <button id="discord-btn" class="provider-btn discord-btn">Continue with Discord</button>
+        <button id="twitch-btn" class="provider-btn twitch-btn">Continue with Twitch</button>
+        <button id="spotify-btn" class="provider-btn spotify-btn">Continue with Spotify</button>
 
-        <button id="login-btn" class="provider-btn github-btn">
-          Continue with GitHub
-        </button>
-
-        <button id="google-btn" class="provider-btn google-btn">
-          Continue with Google
-        </button>
-
-        <button id="discord-btn" class="provider-btn discord-btn">
-          Continue with Discord
-        </button>
-
-        <button id="twitch-btn" class="provider-btn twitch-btn">
-          Continue with Twitch
-        </button>
-
-        <button id="spotify-btn" class="provider-btn spotify-btn">
-          Continue with Spotify
-        </button>
-
-        <div class="divider">
-          <span>OR</span>
-        </div>
+        <div class="divider"><span>OR</span></div>
 
         <div class="email-login">
-          <input
-            type="email"
-            id="email"
-            placeholder="Email address"
-            autocomplete="email"
-          >
-
-          <input
-            type="password"
-            id="password"
-            placeholder="Password"
-            autocomplete="current-password"
-          >
-
-          <button id="email-login-btn" class="email-btn">
-            Log in
-          </button>
-
-          <button id="signup-btn" class="signup-btn">
-            Create account
-          </button>
+          <input type="email" id="email" placeholder="Email address" autocomplete="email">
+          <input type="password" id="password" placeholder="Password" autocomplete="current-password">
+          <button id="email-login-btn" class="email-btn">Log in</button>
+          <button id="signup-btn" class="signup-btn">Create account</button>
         </div>
 
-        <div class="divider">
-          <span>OR</span>
-        </div>
+        <div class="divider"><span>OR</span></div>
 
-        <button id="continue-btn" class="guest-btn">
-          Continue as Guest
-        </button>
-
+        <button id="continue-btn" class="guest-btn">Continue as Guest</button>
       </div>
 
       <div id="signed-in" hidden>
         <img id="avatar" src="" alt="Profile picture">
-
         <h2 id="username"></h2>
         <p class="subtitle">You're signed in!</p>
-
-        <button id="logged-in-continue" class="continue-btn">
-          Continue
-        </button>
-
-        <button id="logout-btn" class="logout-btn">
-          Sign out
-        </button>
+        <button id="logged-in-continue" class="continue-btn">Continue</button>
+        <button id="logout-btn" class="logout-btn">Sign out</button>
       </div>
 
       <p id="status" role="status"></p>
-
-      <footer>
-        3x3 Eggs
-      </footer>
-
+      <footer>3x3 Eggs</footer>
     </section>
   </main>
 
   <div id="game">
-    <iframe
-      id="game-frame"
-      title="3x3 Eggs Game"
-      allowfullscreen
-    ></iframe>
+    <iframe id="game-frame" title="3x3 Eggs Game" allowfullscreen></iframe>
   </div>
 
   <script type="module" src="script.js"></script>
