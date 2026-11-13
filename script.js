@@ -28,7 +28,9 @@ const signedIn = document.getElementById("signed-in");
 
 const loginBtn = document.getElementById("login-btn");
 const logoutBtn = document.getElementById("logout-btn");
+
 const continueBtn = document.getElementById("continue-btn");
+const loggedInContinue = document.getElementById("logged-in-continue");
 
 const avatar = document.getElementById("avatar");
 const username = document.getElementById("username");
@@ -139,9 +141,9 @@ logoutBtn.addEventListener("click", async () => {
 
 });
 
-// CONTINUE WITHOUT LOGIN
+// LOAD GAME
 
-continueBtn.addEventListener("click", () => {
+function loadGame() {
 
     loginScreen.classList.add("fade");
 
@@ -164,6 +166,22 @@ continueBtn.addEventListener("click", () => {
         game.appendChild(iframe);
 
     }, 400);
+
+}
+
+// CONTINUE WITHOUT LOGIN
+
+continueBtn.addEventListener("click", () => {
+
+    loadGame();
+
+});
+
+// CONTINUE WHILE LOGGED IN
+
+loggedInContinue.addEventListener("click", () => {
+
+    loadGame();
 
 });
 
