@@ -119,6 +119,22 @@ button:disabled {
     color: #4285f4;
 }
 
+/* DISCORD */
+
+.discord-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 12px;
+    background: #5865F2;
+    color: white;
+}
+
+.discord-btn:hover {
+    background: #4752C4;
+}
+
 /* CONTINUE */
 
 .game-btn {
