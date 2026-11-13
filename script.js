@@ -22,6 +22,12 @@ const discordBtn = document.getElementById("discord-btn");
 const twitchBtn = document.getElementById("twitch-btn");
 const spotifyBtn = document.getElementById("spotify-btn");
 
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
+
+const emailLoginBtn = document.getElementById("email-login-btn");
+const signupBtn = document.getElementById("signup-btn");
+
 const logoutBtn = document.getElementById("logout-btn");
 const continueBtn = document.getElementById("continue-btn");
 const loggedInContinue = document.getElementById("logged-in-continue");
@@ -29,47 +35,54 @@ const loggedInContinue = document.getElementById("logged-in-continue");
 const avatar = document.getElementById("avatar");
 const username = document.getElementById("username");
 const status = document.getElementById("status");
+
 const game = document.getElementById("game");
+const gameFrame = document.getElementById("game-frame");
 
-let gameStarted = false;
+// Default avatar
+const DEFAULT_AVATAR =
+  "data:image/svg+xml," +
+  encodeURIComponent(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+      <rect width="100" height="100" rx="50" fill="#444"/>
+      <circle cx="50" cy="38" r="19" fill="#aaa"/>
+      <path d="M15 95 Q20 60 50 60 Q80 60 85 95" fill="#aaa"/>
+    </svg>
+  `);
 
-// Display the user's profile
+// Update user information
 function updateUser(user) {
-  if (user) {
-    const metadata = user.user_metadata || {};
-
-    const displayName =
-      metadata.user_name ||
-      metadata.preferred_username ||
-      metadata.name ||
-      metadata.full_name ||
-      user.email ||
-      "User";
-
-    const profilePicture =
-      metadata.avatar_url ||
-      metadata.picture ||
-      metadata.profile_image_url ||
-      "";
-
-    username.textContent = displayName;
-
-    avatar.src = profilePicture || "data:image/svg+xml," + encodeURIComponent(`
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-        <rect width="100" height="100" rx="50" fill="#34364d"/>
-        <text x="50" y="66" font-size="48" text-anchor="middle" fill="white">?</text>
-      </svg>
-    `);
-
-    signedOut.hidden = true;
-    signedIn.hidden = false;
-  } else {
+  if (!user) {
     signedOut.hidden = false;
     signedIn.hidden = true;
+    return;
   }
+
+  signedOut.hidden = true;
+  signedIn.hidden = false;
+
+  const metadata = user.user_metadata || {};
+
+  username.textContent =
+    metadata.user_name ||
+    metadata.preferred_username ||
+    metadata.name ||
+    metadata.full_name ||
+    user.email ||
+    "User";
+
+  avatar.src =
+    metadata.avatar_url ||
+    metadata.picture ||
+    metadata.profile_image_url ||
+    DEFAULT_AVATAR;
+
+  avatar.onerror = () => {
+    avatar.src = DEFAULT_AVATAR;
+  };
 }
 
-// Check whether the user is already logged in
+// Check existing login
 async function checkLogin() {
   const { data, error } = await supabase.auth.getSession();
 
@@ -81,13 +94,13 @@ async function checkLogin() {
   updateUser(data.session?.user || null);
 }
 
-// Sign in with an OAuth provider
+// OAuth login
 async function signIn(provider, button, providerName) {
   button.disabled = true;
   status.textContent = `Redirecting to ${providerName}...`;
 
   const { error } = await supabase.auth.signInWithOAuth({
-    provider: provider,
+    provider,
     options: {
       redirectTo: window.location.origin + window.location.pathname
     }
@@ -99,83 +112,126 @@ async function signIn(provider, button, providerName) {
   }
 }
 
-// GitHub login
+// Existing providers
 loginBtn.addEventListener("click", () => {
   signIn("github", loginBtn, "GitHub");
 });
 
-// Google login
 googleBtn.addEventListener("click", () => {
   signIn("google", googleBtn, "Google");
 });
 
-// Discord login
 discordBtn.addEventListener("click", () => {
   signIn("discord", discordBtn, "Discord");
 });
 
-// Twitch login
 twitchBtn.addEventListener("click", () => {
   signIn("twitch", twitchBtn, "Twitch");
 });
 
-// Spotify login
 spotifyBtn.addEventListener("click", () => {
   signIn("spotify", spotifyBtn, "Spotify");
 });
 
+// Email/password login
+emailLoginBtn.addEventListener("click", async () => {
+  const email = emailInput.value.trim();
+  const password = passwordInput.value;
+
+  if (!email || !password) {
+    status.textContent = "Enter your email and password.";
+    return;
+  }
+
+  emailLoginBtn.disabled = true;
+  status.textContent = "Logging in...";
+
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  emailLoginBtn.disabled = false;
+
+  if (error) {
+    status.textContent = error.message;
+  } else {
+    status.textContent = "Login successful!";
+  }
+});
+
+// Create account
+signupBtn.addEventListener("click", async () => {
+  const email = emailInput.value.trim();
+  const password = passwordInput.value;
+
+  if (!email || !password) {
+    status.textContent = "Enter your email and password.";
+    return;
+  }
+
+  if (password.length < 6) {
+    status.textContent = "Password must be at least 6 characters.";
+    return;
+  }
+
+  signupBtn.disabled = true;
+  status.textContent = "Creating account...";
+
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      emailRedirectTo:
+        window.location.origin + window.location.pathname
+    }
+  });
+
+  signupBtn.disabled = false;
+
+  if (error) {
+    status.textContent = error.message;
+    return;
+  }
+
+  if (data.session) {
+    status.textContent = "Account created successfully!";
+  } else {
+    status.textContent =
+      "Account created! Check your email to confirm your account.";
+  }
+});
+
 // Sign out
 logoutBtn.addEventListener("click", async () => {
-  logoutBtn.disabled = true;
   status.textContent = "Signing out...";
 
   const { error } = await supabase.auth.signOut();
 
   if (error) {
     status.textContent = error.message;
-    logoutBtn.disabled = false;
-    return;
+  } else {
+    status.textContent = "Signed out successfully.";
   }
-
-  updateUser(null);
-  status.textContent = "";
-  logoutBtn.disabled = false;
 });
 
-// Load the game
+// Load game
 function loadGame() {
-  if (gameStarted) return;
+  loginScreen.style.display = "none";
+  game.style.display = "block";
 
-  gameStarted = true;
-  status.textContent = "";
-
-  const iframe = document.createElement("iframe");
-
-  iframe.src = GAME_URL;
-  iframe.title = "3x3 Eggs Game";
-  iframe.allow = "fullscreen; autoplay";
-  iframe.allowFullscreen = true;
-
-  game.appendChild(iframe);
-
-  loginScreen.classList.add("fade-out");
-
-  setTimeout(() => {
-    loginScreen.style.display = "none";
-  }, 400);
+  if (!gameFrame.src) {
+    gameFrame.src = GAME_URL;
+  }
 }
 
 // Continue as guest
-continueBtn.addEventListener("click", () => {
-  loadGame();
-});
+continueBtn.addEventListener("click", loadGame);
 
-// Continue while logged in
-loggedInContinue.addEventListener("click", () => {
-  loadGame();
-});
+// Continue while signed in
+loggedInContinue.addEventListener("click", loadGame);
 
-// Listen for login/logout changes
+// Listen for login changes
 supabase.auth.onAuthStateChange((event, session) => {
   updateUser(session?.user || null);
 });
