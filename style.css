@@ -81,6 +81,8 @@ button:disabled {
     transform: none;
 }
 
+/* GITHUB */
+
 .github-btn {
     display: flex;
     align-items: center;
@@ -94,19 +96,42 @@ button:disabled {
     background: #ddd;
 }
 
-/* MAIN CONTINUE BUTTON */
+/* GOOGLE */
+
+.google-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 12px;
+    background: white;
+    color: #222;
+    border: 1px solid #ddd;
+}
+
+.google-btn:hover {
+    background: #eee;
+}
+
+.google-icon {
+    font-size: 21px;
+    font-weight: bold;
+    color: #4285f4;
+}
+
+/* CONTINUE */
 
 .game-btn {
-    background: #ffffff;
+    background: white;
     color: #111;
     margin-bottom: 10px;
 }
 
 .game-btn:hover {
-    background: #dddddd;
+    background: #ddd;
 }
 
-/* SIGN OUT BUTTON */
+/* SIGN OUT */
 
 .logout-btn {
     background: #36364b;
@@ -117,7 +142,7 @@ button:disabled {
     background: #494963;
 }
 
-/* CONTINUE WITHOUT LOGIN */
+/* GUEST */
 
 .continue-btn {
     background: transparent;
@@ -130,6 +155,8 @@ button:disabled {
     background: #252536;
     color: white;
 }
+
+/* DIVIDER */
 
 .divider {
     display: flex;
@@ -148,6 +175,8 @@ button:disabled {
     background: #333344;
 }
 
+/* PROFILE */
+
 #avatar {
     width: 75px;
     height: 75px;
@@ -162,10 +191,13 @@ button:disabled {
     font-size: 19px;
 }
 
+/* STATUS */
+
 #status {
     color: #e8b875;
     font-size: 12px;
     margin-top: 12px;
+    overflow-wrap: anywhere;
 }
 
 small {
@@ -174,6 +206,8 @@ small {
     margin-top: 22px;
     font-size: 11px;
 }
+
+/* GAME */
 
 #game {
     width: 100%;
