@@ -95,6 +95,11 @@ button:disabled {
   color: black;
 }
 
+.roblox-btn {
+  background: #ffffff;
+  color: #111111;
+}
+
 .divider {
   display: flex;
   align-items: center;
