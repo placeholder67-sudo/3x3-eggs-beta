@@ -28,6 +28,7 @@ const signedIn = document.getElementById("signed-in");
 
 const loginBtn = document.getElementById("login-btn");
 const googleBtn = document.getElementById("google-btn");
+const discordBtn = document.getElementById("discord-btn");
 
 const logoutBtn = document.getElementById("logout-btn");
 
@@ -143,6 +144,35 @@ googleBtn.addEventListener("click", async () => {
 
         status.textContent = error.message;
         googleBtn.disabled = false;
+
+    }
+
+});
+
+// DISCORD LOGIN
+
+discordBtn.addEventListener("click", async () => {
+
+    discordBtn.disabled = true;
+    status.textContent = "Redirecting to Discord...";
+
+    const { error } =
+        await supabase.auth.signInWithOAuth({
+
+            provider: "discord",
+
+            options: {
+                redirectTo:
+                    window.location.origin +
+                    window.location.pathname
+            }
+
+        });
+
+    if (error) {
+
+        status.textContent = error.message;
+        discordBtn.disabled = false;
 
     }
 
