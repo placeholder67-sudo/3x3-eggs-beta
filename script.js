@@ -17,6 +17,7 @@ const googleBtn = document.getElementById("google-btn");
 const discordBtn = document.getElementById("discord-btn");
 const twitchBtn = document.getElementById("twitch-btn");
 const spotifyBtn = document.getElementById("spotify-btn");
+const robloxBtn = document.getElementById("roblox-btn");
 
 const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
@@ -109,6 +110,11 @@ googleBtn.addEventListener("click", () => signIn("google", googleBtn, "Google"))
 discordBtn.addEventListener("click", () => signIn("discord", discordBtn, "Discord"));
 twitchBtn.addEventListener("click", () => signIn("twitch", twitchBtn, "Twitch"));
 spotifyBtn.addEventListener("click", () => signIn("spotify", spotifyBtn, "Spotify"));
+
+// Roblox login
+robloxBtn.addEventListener("click", () =>
+  signIn("custom:roblox", robloxBtn, "Roblox")
+);
 
 // Email login
 emailLoginBtn.addEventListener("click", async () => {
