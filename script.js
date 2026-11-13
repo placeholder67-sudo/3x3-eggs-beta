@@ -20,6 +20,7 @@ const loginBtn = document.getElementById("login-btn");
 const googleBtn = document.getElementById("google-btn");
 const discordBtn = document.getElementById("discord-btn");
 const twitchBtn = document.getElementById("twitch-btn");
+const spotifyBtn = document.getElementById("spotify-btn");
 
 const logoutBtn = document.getElementById("logout-btn");
 const continueBtn = document.getElementById("continue-btn");
@@ -116,6 +117,11 @@ discordBtn.addEventListener("click", () => {
 // Twitch login
 twitchBtn.addEventListener("click", () => {
   signIn("twitch", twitchBtn, "Twitch");
+});
+
+// Spotify login
+spotifyBtn.addEventListener("click", () => {
+  signIn("spotify", spotifyBtn, "Spotify");
 });
 
 // Sign out
