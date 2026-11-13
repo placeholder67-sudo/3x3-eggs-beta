@@ -75,6 +75,12 @@ button:hover {
     transform: translateY(-2px);
 }
 
+button:disabled {
+    opacity: .6;
+    cursor: wait;
+    transform: none;
+}
+
 .github-btn {
     display: flex;
     align-items: center;
@@ -88,6 +94,20 @@ button:hover {
     background: #ddd;
 }
 
+/* MAIN CONTINUE BUTTON */
+
+.game-btn {
+    background: #ffffff;
+    color: #111;
+    margin-bottom: 10px;
+}
+
+.game-btn:hover {
+    background: #dddddd;
+}
+
+/* SIGN OUT BUTTON */
+
 .logout-btn {
     background: #36364b;
     color: white;
@@ -96,6 +116,8 @@ button:hover {
 .logout-btn:hover {
     background: #494963;
 }
+
+/* CONTINUE WITHOUT LOGIN */
 
 .continue-btn {
     background: transparent;
