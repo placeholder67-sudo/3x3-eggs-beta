@@ -27,16 +27,21 @@ const signedOut = document.getElementById("signed-out");
 const signedIn = document.getElementById("signed-in");
 
 const loginBtn = document.getElementById("login-btn");
+const googleBtn = document.getElementById("google-btn");
+
 const logoutBtn = document.getElementById("logout-btn");
 
 const continueBtn = document.getElementById("continue-btn");
-const loggedInContinue = document.getElementById("logged-in-continue");
+const loggedInContinue =
+    document.getElementById("logged-in-continue");
 
 const avatar = document.getElementById("avatar");
 const username = document.getElementById("username");
 const status = document.getElementById("status");
 
 const game = document.getElementById("game");
+
+let gameStarted = false;
 
 // SHOW USER
 
@@ -57,7 +62,7 @@ function updateUser(user) {
         metadata.preferred_username ||
         metadata.name ||
         user.email ||
-        "GitHub User";
+        "User";
 
     avatar.src =
         metadata.avatar_url ||
@@ -92,17 +97,15 @@ loginBtn.addEventListener("click", async () => {
     loginBtn.disabled = true;
     status.textContent = "Redirecting to GitHub...";
 
-    const redirectURL =
-        window.location.origin +
-        window.location.pathname;
-
     const { error } =
         await supabase.auth.signInWithOAuth({
 
             provider: "github",
 
             options: {
-                redirectTo: redirectURL
+                redirectTo:
+                    window.location.origin +
+                    window.location.pathname
             }
 
         });
@@ -111,6 +114,35 @@ loginBtn.addEventListener("click", async () => {
 
         status.textContent = error.message;
         loginBtn.disabled = false;
+
+    }
+
+});
+
+// GOOGLE LOGIN
+
+googleBtn.addEventListener("click", async () => {
+
+    googleBtn.disabled = true;
+    status.textContent = "Redirecting to Google...";
+
+    const { error } =
+        await supabase.auth.signInWithOAuth({
+
+            provider: "google",
+
+            options: {
+                redirectTo:
+                    window.location.origin +
+                    window.location.pathname
+            }
+
+        });
+
+    if (error) {
+
+        status.textContent = error.message;
+        googleBtn.disabled = false;
 
     }
 
@@ -144,6 +176,10 @@ logoutBtn.addEventListener("click", async () => {
 // LOAD GAME
 
 function loadGame() {
+
+    if (gameStarted) return;
+
+    gameStarted = true;
 
     loginScreen.classList.add("fade");
 
