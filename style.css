@@ -1,0 +1,166 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+    background: #09090f;
+    color: white;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+#login-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle at top, #252440, #09090f 70%);
+    transition: opacity .4s;
+}
+
+#login-screen.fade {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.login-box {
+    width: 360px;
+    max-width: 90%;
+    padding: 40px 30px;
+    text-align: center;
+    background: #151520;
+    border: 1px solid #303044;
+    border-radius: 18px;
+    box-shadow: 0 20px 80px #0008;
+}
+
+.logo {
+    font-size: 38px;
+    margin-bottom: 15px;
+}
+
+h1 {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    color: #9999aa;
+    font-size: 14px;
+    margin-bottom: 25px;
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 9px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: .2s;
+}
+
+button:hover {
+    transform: translateY(-2px);
+}
+
+.github-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: white;
+    color: #111;
+}
+
+.github-btn:hover {
+    background: #ddd;
+}
+
+.logout-btn {
+    background: #36364b;
+    color: white;
+}
+
+.logout-btn:hover {
+    background: #494963;
+}
+
+.continue-btn {
+    background: transparent;
+    border: 1px solid #39394d;
+    color: #aaaabb;
+    padding: 12px;
+}
+
+.continue-btn:hover {
+    background: #252536;
+    color: white;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 22px 0;
+    color: #777;
+    font-size: 11px;
+}
+
+.divider::before,
+.divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #333344;
+}
+
+#avatar {
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 10px auto;
+    display: block;
+}
+
+#username {
+    margin: 10px 0;
+    font-size: 19px;
+}
+
+#status {
+    color: #e8b875;
+    font-size: 12px;
+    margin-top: 12px;
+}
+
+small {
+    display: block;
+    color: #666677;
+    margin-top: 22px;
+    font-size: 11px;
+}
+
+#game {
+    width: 100%;
+    height: 100%;
+}
+
+#game iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+}
