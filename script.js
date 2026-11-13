@@ -1,17 +1,13 @@
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
-// Supabase configuration
 const SUPABASE_URL = "https://jvzsyeotmencofyfuirj.supabase.co";
-
 const SUPABASE_KEY = "sb_publishable_jT4IAvc6SSevUZivTuqbIg_Cr7pj8F7";
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// Game URL
 const GAME_URL =
   "https://www.timestables.com/gf/3x3-steal-egg/20261112-1036/index.html?timestables=10&lang=da&multiplayer=wss://tsu3.tafeldiploma.nl/eggs/multiplayer&swap=1";
 
-// HTML elements
 const loginScreen = document.getElementById("login-screen");
 const signedOut = document.getElementById("signed-out");
 const signedIn = document.getElementById("signed-in");
@@ -24,7 +20,6 @@ const spotifyBtn = document.getElementById("spotify-btn");
 
 const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
-
 const emailLoginBtn = document.getElementById("email-login-btn");
 const signupBtn = document.getElementById("signup-btn");
 
@@ -39,7 +34,6 @@ const status = document.getElementById("status");
 const game = document.getElementById("game");
 const gameFrame = document.getElementById("game-frame");
 
-// Default avatar
 const DEFAULT_AVATAR =
   "data:image/svg+xml," +
   encodeURIComponent(`
@@ -50,7 +44,6 @@ const DEFAULT_AVATAR =
     </svg>
   `);
 
-// Update user information
 function updateUser(user) {
   if (!user) {
     signedOut.hidden = false;
@@ -82,7 +75,6 @@ function updateUser(user) {
   };
 }
 
-// Check existing login
 async function checkLogin() {
   const { data, error } = await supabase.auth.getSession();
 
@@ -94,7 +86,6 @@ async function checkLogin() {
   updateUser(data.session?.user || null);
 }
 
-// OAuth login
 async function signIn(provider, button, providerName) {
   button.disabled = true;
   status.textContent = `Redirecting to ${providerName}...`;
@@ -112,28 +103,14 @@ async function signIn(provider, button, providerName) {
   }
 }
 
-// Existing providers
-loginBtn.addEventListener("click", () => {
-  signIn("github", loginBtn, "GitHub");
-});
+// Social logins
+loginBtn.addEventListener("click", () => signIn("github", loginBtn, "GitHub"));
+googleBtn.addEventListener("click", () => signIn("google", googleBtn, "Google"));
+discordBtn.addEventListener("click", () => signIn("discord", discordBtn, "Discord"));
+twitchBtn.addEventListener("click", () => signIn("twitch", twitchBtn, "Twitch"));
+spotifyBtn.addEventListener("click", () => signIn("spotify", spotifyBtn, "Spotify"));
 
-googleBtn.addEventListener("click", () => {
-  signIn("google", googleBtn, "Google");
-});
-
-discordBtn.addEventListener("click", () => {
-  signIn("discord", discordBtn, "Discord");
-});
-
-twitchBtn.addEventListener("click", () => {
-  signIn("twitch", twitchBtn, "Twitch");
-});
-
-spotifyBtn.addEventListener("click", () => {
-  signIn("spotify", spotifyBtn, "Spotify");
-});
-
-// Email/password login
+// Email login
 emailLoginBtn.addEventListener("click", async () => {
   const email = emailInput.value.trim();
   const password = passwordInput.value;
@@ -154,52 +131,23 @@ emailLoginBtn.addEventListener("click", async () => {
   emailLoginBtn.disabled = false;
 
   if (error) {
-    status.textContent = error.message;
+    if (
+      error.code === "email_not_confirmed" ||
+      error.message.toLowerCase().includes("email not confirmed")
+    ) {
+      status.textContent =
+        "You will need to verify your email before logging in. Check your email.";
+    } else {
+      status.textContent = error.message;
+    }
   } else {
     status.textContent = "Login successful!";
   }
 });
 
-// Create account
-signupBtn.addEventListener("click", async () => {
-  const email = emailInput.value.trim();
-  const password = passwordInput.value;
-
-  if (!email || !password) {
-    status.textContent = "Enter your email and password.";
-    return;
-  }
-
-  if (password.length < 6) {
-    status.textContent = "Password must be at least 6 characters.";
-    return;
-  }
-
-  signupBtn.disabled = true;
-  status.textContent = "Creating account...";
-
-  const { data, error } = await supabase.auth.signUp({
-    email,
-    password,
-    options: {
-      emailRedirectTo:
-        window.location.origin + window.location.pathname
-    }
-  });
-
-  signupBtn.disabled = false;
-
-  if (error) {
-    status.textContent = error.message;
-    return;
-  }
-
-  if (data.session) {
-    status.textContent = "Account created successfully!";
-  } else {
-    status.textContent =
-      "Account created! Check your email to confirm your account.";
-  }
+// Open registration page
+signupBtn.addEventListener("click", () => {
+  window.location.href = new URL("createaccount/", window.location.href).href;
 });
 
 // Sign out
@@ -225,16 +173,22 @@ function loadGame() {
   }
 }
 
-// Continue as guest
 continueBtn.addEventListener("click", loadGame);
-
-// Continue while signed in
 loggedInContinue.addEventListener("click", loadGame);
 
-// Listen for login changes
 supabase.auth.onAuthStateChange((event, session) => {
   updateUser(session?.user || null);
 });
 
-// Initial login check
+// Initial setup
 checkLogin();
+
+// Show message after registration redirect
+const params = new URLSearchParams(window.location.search);
+
+if (params.get("check_email") === "1") {
+  status.textContent =
+    "Account created! Please check your email and verify your address before logging in.";
+
+  window.history.replaceState({}, document.title, window.location.pathname);
+}
