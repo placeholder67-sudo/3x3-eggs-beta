@@ -1,262 +1,178 @@
-import { createClient } from
-"https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
-// SUPABASE CONFIGURATION
+// Supabase configuration
+const SUPABASE_URL = "https://jvzsyeotmencofyfuirj.supabase.co";
 
-const SUPABASE_URL =
-"https://jvzsyeotmencofyfuirj.supabase.co";
+const SUPABASE_KEY = "sb_publishable_jT4IAvc6SSevUZivTuqbIg_Cr7pj8F7";
 
-const SUPABASE_KEY =
-"sb_publishable_jT4IAvc6SSevUZivTuqbIg_Cr7pj8F7";
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const supabase = createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-);
-
-// GAME URL
-
+// Game URL
 const GAME_URL =
-"https://www.timestables.com/gf/3x3-steal-egg/20261112-1036/index.html?timestables=10&lang=da&multiplayer=wss://tsu3.tafeldiploma.nl/eggs/multiplayer&swap=1";
+  "https://www.timestables.com/gf/3x3-steal-egg/20261112-1036/index.html?timestables=10&lang=da&multiplayer=wss://tsu3.tafeldiploma.nl/eggs/multiplayer&swap=1";
 
-// ELEMENTS
-
+// HTML elements
 const loginScreen = document.getElementById("login-screen");
-
 const signedOut = document.getElementById("signed-out");
 const signedIn = document.getElementById("signed-in");
 
 const loginBtn = document.getElementById("login-btn");
 const googleBtn = document.getElementById("google-btn");
 const discordBtn = document.getElementById("discord-btn");
+const twitchBtn = document.getElementById("twitch-btn");
 
 const logoutBtn = document.getElementById("logout-btn");
-
 const continueBtn = document.getElementById("continue-btn");
-const loggedInContinue =
-    document.getElementById("logged-in-continue");
+const loggedInContinue = document.getElementById("logged-in-continue");
 
 const avatar = document.getElementById("avatar");
 const username = document.getElementById("username");
 const status = document.getElementById("status");
-
 const game = document.getElementById("game");
 
 let gameStarted = false;
 
-// SHOW USER
-
+// Display the user's profile
 function updateUser(user) {
-
-    if (!user) {
-
-        signedOut.hidden = false;
-        signedIn.hidden = true;
-
-        return;
-    }
-
+  if (user) {
     const metadata = user.user_metadata || {};
 
-    username.textContent =
-        metadata.user_name ||
-        metadata.preferred_username ||
-        metadata.name ||
-        user.email ||
-        "User";
+    const displayName =
+      metadata.user_name ||
+      metadata.preferred_username ||
+      metadata.name ||
+      metadata.full_name ||
+      user.email ||
+      "User";
 
-    avatar.src =
-        metadata.avatar_url ||
-        metadata.picture ||
-        "";
+    const profilePicture =
+      metadata.avatar_url ||
+      metadata.picture ||
+      metadata.profile_image_url ||
+      "";
+
+    username.textContent = displayName;
+
+    avatar.src = profilePicture || "data:image/svg+xml," + encodeURIComponent(`
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+        <rect width="100" height="100" rx="50" fill="#34364d"/>
+        <text x="50" y="66" font-size="48" text-anchor="middle" fill="white">?</text>
+      </svg>
+    `);
 
     signedOut.hidden = true;
     signedIn.hidden = false;
+  } else {
+    signedOut.hidden = false;
+    signedIn.hidden = true;
+  }
 }
 
-// CHECK EXISTING LOGIN
-
+// Check whether the user is already logged in
 async function checkLogin() {
+  const { data, error } = await supabase.auth.getSession();
 
-    const { data, error } =
-        await supabase.auth.getSession();
+  if (error) {
+    status.textContent = error.message;
+    return;
+  }
 
-    if (error) {
-        status.textContent = error.message;
-        return;
-    }
-
-    updateUser(data.session?.user || null);
+  updateUser(data.session?.user || null);
 }
 
-checkLogin();
+// Sign in with an OAuth provider
+async function signIn(provider, button, providerName) {
+  button.disabled = true;
+  status.textContent = `Redirecting to ${providerName}...`;
 
-// GITHUB LOGIN
-
-loginBtn.addEventListener("click", async () => {
-
-    loginBtn.disabled = true;
-    status.textContent = "Redirecting to GitHub...";
-
-    const { error } =
-        await supabase.auth.signInWithOAuth({
-
-            provider: "github",
-
-            options: {
-                redirectTo:
-                    window.location.origin +
-                    window.location.pathname
-            }
-
-        });
-
-    if (error) {
-
-        status.textContent = error.message;
-        loginBtn.disabled = false;
-
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: provider,
+    options: {
+      redirectTo: window.location.origin + window.location.pathname
     }
+  });
 
+  if (error) {
+    status.textContent = error.message;
+    button.disabled = false;
+  }
+}
+
+// GitHub login
+loginBtn.addEventListener("click", () => {
+  signIn("github", loginBtn, "GitHub");
 });
 
-// GOOGLE LOGIN
-
-googleBtn.addEventListener("click", async () => {
-
-    googleBtn.disabled = true;
-    status.textContent = "Redirecting to Google...";
-
-    const { error } =
-        await supabase.auth.signInWithOAuth({
-
-            provider: "google",
-
-            options: {
-                redirectTo:
-                    window.location.origin +
-                    window.location.pathname
-            }
-
-        });
-
-    if (error) {
-
-        status.textContent = error.message;
-        googleBtn.disabled = false;
-
-    }
-
+// Google login
+googleBtn.addEventListener("click", () => {
+  signIn("google", googleBtn, "Google");
 });
 
-// DISCORD LOGIN
-
-discordBtn.addEventListener("click", async () => {
-
-    discordBtn.disabled = true;
-    status.textContent = "Redirecting to Discord...";
-
-    const { error } =
-        await supabase.auth.signInWithOAuth({
-
-            provider: "discord",
-
-            options: {
-                redirectTo:
-                    window.location.origin +
-                    window.location.pathname
-            }
-
-        });
-
-    if (error) {
-
-        status.textContent = error.message;
-        discordBtn.disabled = false;
-
-    }
-
+// Discord login
+discordBtn.addEventListener("click", () => {
+  signIn("discord", discordBtn, "Discord");
 });
 
-// SIGN OUT
+// Twitch login
+twitchBtn.addEventListener("click", () => {
+  signIn("twitch", twitchBtn, "Twitch");
+});
 
+// Sign out
 logoutBtn.addEventListener("click", async () => {
+  logoutBtn.disabled = true;
+  status.textContent = "Signing out...";
 
-    logoutBtn.disabled = true;
-    status.textContent = "Signing out...";
+  const { error } = await supabase.auth.signOut();
 
-    const { error } =
-        await supabase.auth.signOut();
-
+  if (error) {
+    status.textContent = error.message;
     logoutBtn.disabled = false;
+    return;
+  }
 
-    if (error) {
-
-        status.textContent = error.message;
-        return;
-
-    }
-
-    updateUser(null);
-
-    status.textContent = "Successfully signed out!";
-
+  updateUser(null);
+  status.textContent = "";
+  logoutBtn.disabled = false;
 });
 
-// LOAD GAME
-
+// Load the game
 function loadGame() {
+  if (gameStarted) return;
 
-    if (gameStarted) return;
+  gameStarted = true;
+  status.textContent = "";
 
-    gameStarted = true;
+  const iframe = document.createElement("iframe");
 
-    loginScreen.classList.add("fade");
+  iframe.src = GAME_URL;
+  iframe.title = "3x3 Eggs Game";
+  iframe.allow = "fullscreen; autoplay";
+  iframe.allowFullscreen = true;
 
-    setTimeout(() => {
+  game.appendChild(iframe);
 
-        loginScreen.remove();
+  loginScreen.classList.add("fade-out");
 
-        const iframe =
-            document.createElement("iframe");
-
-        iframe.src = GAME_URL;
-
-        iframe.allow =
-            "fullscreen; autoplay";
-
-        iframe.allowFullscreen = true;
-
-        iframe.title = "3x3 Steal Egg";
-
-        game.appendChild(iframe);
-
-    }, 400);
-
+  setTimeout(() => {
+    loginScreen.style.display = "none";
+  }, 400);
 }
 
-// CONTINUE WITHOUT LOGIN
-
+// Continue as guest
 continueBtn.addEventListener("click", () => {
-
-    loadGame();
-
+  loadGame();
 });
 
-// CONTINUE WHILE LOGGED IN
-
+// Continue while logged in
 loggedInContinue.addEventListener("click", () => {
-
-    loadGame();
-
+  loadGame();
 });
 
-// AUTOMATIC SESSION UPDATES
+// Listen for login/logout changes
+supabase.auth.onAuthStateChange((event, session) => {
+  updateUser(session?.user || null);
+});
 
-supabase.auth.onAuthStateChange(
-    (_event, session) => {
-
-        updateUser(session?.user || null);
-
-    }
-);
+// Initial login check
+checkLogin();
