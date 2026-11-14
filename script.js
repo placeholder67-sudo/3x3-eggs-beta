@@ -18,6 +18,7 @@ const discordBtn = document.getElementById("discord-btn");
 const twitchBtn = document.getElementById("twitch-btn");
 const spotifyBtn = document.getElementById("spotify-btn");
 const robloxBtn = document.getElementById("roblox-btn");
+const gitlabBtn = document.getElementById("gitlab-btn");
 
 const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
@@ -114,6 +115,11 @@ spotifyBtn.addEventListener("click", () => signIn("spotify", spotifyBtn, "Spotif
 // Roblox login
 robloxBtn.addEventListener("click", () =>
   signIn("custom:roblox", robloxBtn, "Roblox")
+);
+
+// GitLab login
+gitlabBtn.addEventListener("click", () =>
+  signIn("gitlab", gitlabBtn, "GitLab")
 );
 
 // Email login
