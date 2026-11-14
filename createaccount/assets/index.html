@@ -1,1 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account - 3x3 Eggs</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="container">
+    <section class="card">
+      <div class="logo">🥚</div>
 
+      <h1>Create Account</h1>
+      <p class="subtitle">Join 3x3 Eggs!</p>
+
+      <form id="signup-form">
+        <input
+          type="email"
+          id="email"
+          placeholder="Email address"
+          autocomplete="email"
+          required
+        >
+
+        <input
+          type="password"
+          id="password"
+          placeholder="Password (at least 6 characters)"
+          autocomplete="new-password"
+          minlength="6"
+          required
+        >
+
+        <input
+          type="password"
+          id="confirm-password"
+          placeholder="Confirm password"
+          autocomplete="new-password"
+          required
+        >
+
+        <button type="submit" id="create-btn">Create Account</button>
+      </form>
+
+      <p id="status" role="status"></p>
+
+      <a href="../index.html" class="back-btn">← Back to Login</a>
+
+      <footer>3x3 Eggs</footer>
+    </section>
+  </main>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>
